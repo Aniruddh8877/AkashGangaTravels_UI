@@ -1,0 +1,189 @@
+<app-progress *ngIf="dataLoading"></app-progress>
+<main id="main" class="main" *ngIf="action.ResponseReceived">
+     <div class="row">
+          <div class="pagetitle dashboard col-sm-8">
+               <h1>{{action.MenuTitle}}</h1>
+               <nav>
+                    <ol class="breadcrumb">
+                         <li class="breadcrumb-item"><a routerLink="admin/admin-dashboard">Home</a></li>
+                         <li class="breadcrumb-item">{{action.ParentMenuTitle}}</li>
+                         <li class="breadcrumb-item active">{{action.MenuTitle}}</li>
+                    </ol>
+               </nav>
+          </div>
+          <div class="col-sm-4">
+               <button mat-raised-button class="float-right" color="primary" *ngIf="action.CanCreate"
+                    data-bs-toggle="modal" data-bs-target="#staticBackdrop" (click)="resetForm()">New
+                    Package</button>
+          </div>
+     </div>
+
+     <section class="section dashboard">
+          <div class="card">
+               <div class="card-body ">
+                    <div class="dataTable-top">
+                         
+                         <mat-form-field appearance="outline" class="col-sm-4">
+                              <mat-label>Destination</mat-label>
+                              <input matInput #DestinationId="ngModel" name="DestinationName"
+                                   (ngModelChange)="filterDestinationList($event)" placeholder="Search By Destination"
+                                   [(ngModel)]="Package.DestinationName" [matAutocomplete]="autoDestination" required />
+                              <mat-autocomplete #autoDestination="matAutocomplete"
+                                   (optionSelected)="afterDestinationSelected($event)">
+                                   <mat-option *ngFor="let options of DestinationList" [id]="options.DestinationId"
+                                        [value]="options.DestinationName">{{ options.DestinationName }}</mat-option>
+                              </mat-autocomplete>
+                              <button mat-icon-button matSuffix *ngIf="Package.DestinationName" color="primary"
+                                   (click)="clearDestination()">
+                                   <mat-icon><i class="ri-close-circle-line"></i> </mat-icon>
+                              </button>
+                              <mat-error>Required field !!</mat-error>
+                         </mat-form-field>
+                         <div class="dataTable-dropdown d-flex">
+                              <select class="dataTable-selector form-select form-select-sm" [(ngModel)]="itemPerPage">
+                                   <option *ngFor="let option of PageSize" [value]="option">{{option}} </option>
+                              </select>
+                              <span class="ms-2">Entries per page</span>
+                         </div>
+                         <div class="dataTable-search">
+                              <input class="dataTable-input form-control form-control-sm" [(ngModel)]="Search"
+                                   placeholder="Search..." type="text">
+                         </div>
+                    </div>
+                    <div class="table-container overflow-auto">
+                         <table class="table table-bordered table-hover">
+                              <thead>
+                                   <tr>
+                                        <th>S.No</th>
+                                        <th style="cursor:pointer;" (click)="sort('PackageName')">Package Code</th>
+                                        <th style="cursor:pointer;" (click)="sort('PackageType')">Destination Name</th>
+                                        <th style="cursor:pointer;" (click)="sort('PackageName')">Package Name</th>
+
+                                        <th style="cursor:pointer;" (click)="sort('PackageType')">Description</th>
+                                        <th style="cursor:pointer;" (click)="sort('Status')">Status</th>
+                                        <th *ngIf="action.CanEdit">Edit</th>
+                                        <th *ngIf="action.CanDelete">Delete</th>
+                                   </tr>
+                              </thead>
+                              <tbody>
+                                   <tr
+                                        *ngFor="let item of PackageList |filter:Search|orderBy:sortKey:reverse|paginate: { itemsPerPage: itemPerPage, currentPage: p } ; ; let i = index;">
+                                        <td>{{(itemPerPage * (p -1)) +i+ 1}}</td>
+                                        <td>{{item.PackageCode}}</td>
+                                        <td>{{item.DestinationName}}</td>
+                                        <td>{{item.PackageName}}</td>
+
+                                        <td>{{item.Description}}</td>
+
+                                        <!-- <td>{{item.PackageName}}</td> -->
+                                        <td>
+                                             <span class="p-1"
+                                                  [ngClass]="item.Status == 1 ? 'badge text-bg-success':'badge text-bg-danger'">
+                                                  {{AllStatusList[item.Status]}}
+                                             </span>
+                                        </td>
+                                        <td *ngIf="action.CanEdit">
+                                             <button class="btn btn-sm btn-warning" data-bs-toggle="modal"
+                                                  data-bs-target="#staticBackdrop" (click)="editPackage(item)">
+                                                  <i class="bi bi-pencil-square"></i>
+                                             </button>
+                                        </td>
+                                        <td *ngIf="action.CanDelete">
+                                             <button class="btn btn-sm btn-danger" (click)="deletePackage(item)">
+                                                  <i class="bi bi-trash-fill"></i>
+                                             </button>
+                                        </td>
+                                   </tr>
+                              </tbody>
+                         </table>
+                    </div>
+                    <div class="dataTable-bottom">
+                         <pagination-controls (pageChange)="onTableDataChange($event)" style="float:right;"
+                              class="my-pagination"></pagination-controls>
+                    </div>
+
+               </div>
+          </div>
+
+     </section>
+
+     <div *ngIf="action.CanEdit || action.CanCreate" class="modal fade" id="staticBackdrop" data-bs-backdrop="static"
+          data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+          <div class="modal-dialog">
+               <div class="modal-content">
+                    <div class="modal-header">
+                         <h1 class="modal-title fs-5" id="staticBackdropLabel">{{Package.PackageId > 0 ?
+                              'Update':'New'}}
+                              Package
+                         </h1>
+                         <button type=" button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                              (click)="resetForm()"></button>
+                    </div>
+                    <div class="modal-body">
+                         <form #formPackage="ngForm">
+                              <div class="container">
+                                   <div class="row">
+                                        <mat-form-field appearance="outline" class="col-sm-12 form-group">
+                                             <mat-label>Destination Name</mat-label>
+                                             <mat-select #DestinationId="ngModel" name="DestinationId"
+                                                  [(ngModel)]="Package.DestinationId" required>
+                                                  <mat-option *ngFor="let option of DestinationList"
+                                                       [value]="option.DestinationId">
+                                                       {{ option.DestinationName }}
+                                                  </mat-option>
+                                             </mat-select>
+                                             <mat-error
+                                                  *ngIf="(DestinationId.dirty || DestinationId.touched) || (DestinationId.invalid && isSubmitted)">
+                                                  Destination is <strong>required</strong>
+                                             </mat-error>
+                                        </mat-form-field>
+
+                                        <mat-form-field appearance="outline" class="col-sm-12">
+                                             <mat-label>Package Name</mat-label>
+                                             <input matInput #CityName="ngModel" name="CityName"
+                                                  [(ngModel)]="Package.PackageName" required autofocus>
+                                             <mat-error
+                                                  *ngIf="(CityName.dirty  || CityName.touched) || (CityName.invalid && isSubmitted)">
+                                                  Package name is <strong>required</strong>
+                                             </mat-error>
+                                        </mat-form-field>
+
+
+
+                                   </div>
+
+                                   <div class="row">
+                                        <mat-form-field appearance="outline" class="col-sm-12">
+                                             <mat-label>Description</mat-label>
+                                             <textarea matInput #Description="ngModel" name="Description"
+                                                  [(ngModel)]="Package.Description" autofocus></textarea>
+
+                                        </mat-form-field>
+
+                                        <mat-form-field appearance="outline" class="col-sm-12">
+                                             <mat-label>Status</mat-label>
+                                             <mat-select #Status="ngModel" name="Status" [(ngModel)]="Package.Status"
+                                                  required>
+                                                  <mat-option [value]="status.Key"
+                                                       *ngFor="let status of StatusList">{{status.Value}}</mat-option>
+                                             </mat-select>
+                                             <mat-error
+                                                  *ngIf="(Status.dirty  || Status.touched) || (Status.invalid && isSubmitted)">
+                                                  Status is <strong>required</strong>
+                                             </mat-error>
+                                        </mat-form-field>
+                                   </div>
+                              </div>
+                         </form>
+                    </div>
+                    <div class="modal-footer">
+                         <button type="button" mat-raised-button color="warn" class="me-2" data-bs-dismiss="modal"
+                              (click)="resetForm()">Cancel</button>
+                         <button mat-raised-button color="primary" (click)="savePackage()">{{Package.PackageId >
+                              0 ? 'Update':'Submit'}}</button>
+                    </div>
+               </div>
+          </div>
+     </div>
+
+</main>
