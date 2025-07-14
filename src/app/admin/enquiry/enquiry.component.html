@@ -39,15 +39,17 @@
                     </mat-form-field>
 
                     <mat-form-field appearance="outline" class="col-sm-4">
-                         <mat-label>Months</mat-label>
-                         <mat-select #Month="ngModel" name="Month" [(ngModel)]="Enquiry.Month" required>
-                              <mat-option [value]="Month.Key"
-                                   *ngFor="let Month of MonthList">{{Month.Value}}</mat-option>
-                         </mat-select>
-                         <mat-error *ngIf="(Month.dirty  || Month.touched) || (Month.invalid && isSubmitted)">
-                              Flight Option is <strong>required</strong>
-                         </mat-error>
-                    </mat-form-field>
+                                             <mat-label>Months</mat-label>
+                                             <mat-select #Month="ngModel" name="Month"
+                                                  [(ngModel)]="Enquiry.Month" required>
+                                                  <mat-option [value]="Month.Key"
+                                                       *ngFor="let Month of MonthList">{{Month.Value}}</mat-option>
+                                             </mat-select>
+                                             <mat-error
+                                                  *ngIf="(Month.dirty  || Month.touched) || (Month.invalid && isSubmitted)">
+                                                  Flight Option is <strong>required</strong>
+                                             </mat-error>
+                                        </mat-form-field>
                     <div class="dataTable-top">
                          <div class="dataTable-dropdown d-flex">
                               <select class="dataTable-selector form-select form-select-sm" [(ngModel)]="itemPerPage">
