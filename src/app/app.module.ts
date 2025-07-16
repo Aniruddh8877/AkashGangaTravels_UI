@@ -41,6 +41,9 @@ import { DestinationComponent } from './admin/destination/destination.component'
 import { HotelCategoryComponent } from './admin/hotel-category/hotel-category.component';
 import { PackageComponent } from './admin/package/package.component';
 import { EnquiryComponent } from './admin/enquiry/enquiry.component';
+import { AgentComponent } from './admin/agent/agent.component';
+import { IDTypeComponent } from './admin/idtype/idtype.component';
+import { BookingComponent } from './admin/booking/booking.component';
 
 @NgModule({
   declarations: [
@@ -70,7 +73,10 @@ import { EnquiryComponent } from './admin/enquiry/enquiry.component';
     DestinationComponent,
     HotelCategoryComponent,
     PackageComponent,
-    EnquiryComponent
+    EnquiryComponent,
+    AgentComponent,
+    IDTypeComponent,
+    BookingComponent
   ],
   imports: [
     BrowserModule,

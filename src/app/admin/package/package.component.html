@@ -21,24 +21,43 @@
      <section class="section dashboard">
           <div class="card">
                <div class="card-body ">
-                    <div class="dataTable-top">
-                         
+                    <div class="dataTable-dropdown d-flex">
                          <mat-form-field appearance="outline" class="col-sm-4">
                               <mat-label>Destination</mat-label>
+
+                              <!-- 🔽 Autocomplete Input -->
                               <input matInput #DestinationId="ngModel" name="DestinationName"
-                                   (ngModelChange)="filterDestinationList($event)" placeholder="Search By Destination"
-                                   [(ngModel)]="Package.DestinationName" [matAutocomplete]="autoDestination" required />
+                                   placeholder="Search By Destination" [(ngModel)]="Package.DestinationName"
+                                   (ngModelChange)="filterDestinationList($event)"
+                                   [matAutocomplete]="autoDestination" />
+
+                              <!-- 🔍 Search Icon (floats right) -->
+                              <button mat-icon-button matSuffix disableRipple color="accent">
+                                   <mat-icon>search</mat-icon>
+                              </button>
+
+                              <!-- ❌ Clear Icon -->
+                              <button mat-icon-button matSuffix *ngIf="Package.DestinationName" color="primary"
+                                   (click)="clearDestination()">
+                                   <mat-icon><i class="ri-close-circle-line"></i></mat-icon>
+                              </button>
+
+                              <!-- 🔽 Autocomplete Dropdown -->
                               <mat-autocomplete #autoDestination="matAutocomplete"
                                    (optionSelected)="afterDestinationSelected($event)">
                                    <mat-option *ngFor="let options of DestinationList" [id]="options.DestinationId"
-                                        [value]="options.DestinationName">{{ options.DestinationName }}</mat-option>
+                                        [value]="options.DestinationName">
+                                        {{ options.DestinationName }}
+                                   </mat-option>
                               </mat-autocomplete>
-                              <button mat-icon-button matSuffix *ngIf="Package.DestinationName" color="primary"
-                                   (click)="clearDestination()">
-                                   <mat-icon><i class="ri-close-circle-line"></i> </mat-icon>
-                              </button>
+
                               <mat-error>Required field !!</mat-error>
                          </mat-form-field>
+                    </div>
+
+
+                    <div class="dataTable-top">
+
                          <div class="dataTable-dropdown d-flex">
                               <select class="dataTable-selector form-select form-select-sm" [(ngModel)]="itemPerPage">
                                    <option *ngFor="let option of PageSize" [value]="option">{{option}} </option>

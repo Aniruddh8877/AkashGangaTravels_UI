@@ -3,7 +3,7 @@ import { NgForm } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { AppService } from '../../utils/app.service';
 import { ConstantData } from '../../utils/constant-data';
-import {  EnquiryStatus, FlightOption, MealPlan, MonthList, Status } from '../../utils/enum';
+import {  EnquiryStatus, FlightOption, MealPlan, Months, Status } from '../../utils/enum';
 import { LoadDataService } from '../../utils/load-data.service';
 import { ActionModel, RequestModel, StaffLoginModel } from '../../utils/interface';
 import { LocalService } from '../../utils/local.service';
@@ -28,7 +28,7 @@ export class EnquiryComponent {
   itemPerPage: number = this.PageSize[0];
   StateList: any[] = [];
   filterState: any[] = [];
-  MonthList = this.loadData.GetEnumList(MonthList);
+  MonthList = this.loadData.GetEnumList(Months);
   FlightOptionList = this.loadData.GetEnumList(FlightOption);
   MealPlanList = this.loadData.GetEnumList(MealPlan);
   EnquiryStatusList = this.loadData.GetEnumList(EnquiryStatus);
@@ -88,7 +88,9 @@ export class EnquiryComponent {
 
   @ViewChild('formEnquiry') formEnquiry: NgForm;
   resetForm() {
-    this.Enquiry = {};
+    this.Enquiry = {
+      EnquiryStatus: 1,
+    };
     if (this.formEnquiry) {
       this.formEnquiry.control.markAsPristine();
       this.formEnquiry.control.markAsUntouched();
@@ -110,16 +112,22 @@ export class EnquiryComponent {
     this.Enquiry.StateId = event.option.id;
   }
 
-  getEnquiryList(DestinationId:any) {
-  const request: RequestModel = {
-    request: this.localService.encrypt(JSON.stringify({DestinationId})).toString()
+getEnquiryList(destinationId: any) {
+  const requestData = {
+    DestinationId: destinationId || 0,
+    Months: this.Enquiry.Month || 0,
+    FromDate: this.Enquiry.FromDate ? this.loadData.loadDateYMD(this.Enquiry.FromDate) : null,
+    ToDate: this.Enquiry.ToDate ? this.loadData.loadDateYMD(this.Enquiry.ToDate) : null
   };
+
+  const request: RequestModel = {
+    request: this.localService.encrypt(JSON.stringify(requestData)).toString()
+  };
+
   this.dataLoading = true;
   this.service.getEnquiryList(request).subscribe((response: any) => {
     if (response.Message === ConstantData.SuccessMessage) {
       this.EnquiryList = response.EnquiryList;
-      console.log("EnquiryList", this.EnquiryList);
-      
     } else {
       this.toastr.error(response.Message);
     }
@@ -285,6 +293,7 @@ onDestinationChange(destinationId: number): void {
     this.DestinationListAll = this.DestinationList;
     this.Enquiry.DestinationId = null;
     this.Enquiry.DestinationName = '';
+    this.getEnquiryList(0);
   }
 
 

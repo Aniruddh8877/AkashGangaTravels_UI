@@ -100,7 +100,7 @@ export enum MealPlan {
     CP = 3,
 }
 
-export enum MonthList {
+export enum Months {
     January = 1,
     February = 2,
     March = 3,

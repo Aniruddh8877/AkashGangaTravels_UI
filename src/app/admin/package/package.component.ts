@@ -222,5 +222,6 @@ export class PackageComponent {
     this.DestinationListAll = this.DestinationList;
     this.Package.DestinationId = null;
     this.Package.DestinationName = '';
+    this.getPackageList(0);
   }
 }

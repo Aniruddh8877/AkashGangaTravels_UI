@@ -21,6 +21,9 @@ import { DestinationComponent } from './admin/destination/destination.component'
 import { HotelCategoryComponent } from './admin/hotel-category/hotel-category.component';
 import { PackageComponent } from './admin/package/package.component';
 import { EnquiryComponent } from './admin/enquiry/enquiry.component';
+import { AgentComponent } from './admin/agent/agent.component';
+import { IDTypeComponent } from './admin/idtype/idtype.component';
+import { BookingComponent } from './admin/booking/booking.component';
 
 const routes: Routes = [
   { path: '', redirectTo: "/admin-login", pathMatch: 'full' },
@@ -46,6 +49,9 @@ const routes: Routes = [
       { path: 'HotelCategory', component: HotelCategoryComponent },
       { path: 'Package', component: PackageComponent },
       { path: 'Enquiry', component: EnquiryComponent },
+      { path: 'Agent', component: AgentComponent },
+      { path: 'IDType', component: IDTypeComponent },
+      { path: 'Booking', component: BookingComponent },
     ]
   },
   { path: 'page-not-found', component: PageNotFoundComponent },

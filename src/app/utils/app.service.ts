@@ -60,6 +60,26 @@ export class AppService {
   deleteEnquiry(obj: any) {
     return this.http.post(this.apiUrl + "Enquiry/deleteEnquriy", obj, { headers: this.headers })
   }
+                                                // Agent
+  getAgentList(obj: any) {
+    return this.http.post(this.apiUrl + "Agent/AgentList", obj, { headers: this.headers })
+  }
+  saveAgent(obj: any) {
+    return this.http.post(this.apiUrl + "Agent/saveAgent", obj, { headers: this.headers })
+  } 
+  deleteAgent(obj: any) {
+    return this.http.post(this.apiUrl + "Agent/deleteAgent", obj, { headers: this.headers })
+  }
+
+  getIDTypeList(obj: any) {
+    return this.http.post(this.apiUrl + "IDType/IDTypeList", obj, { headers: this.headers })
+  }
+  saveIDType(obj: any) {
+    return this.http.post(this.apiUrl + "IDType/saveIDType", obj, { headers: this.headers })
+  }
+  deleteIDType(obj: any) {
+    return this.http.post(this.apiUrl + "IDType/deleteIdType", obj, { headers: this.headers })
+  }
 
   // District
   getDistrictList(obj: any) {

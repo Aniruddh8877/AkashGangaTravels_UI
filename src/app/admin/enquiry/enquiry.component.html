@@ -21,35 +21,54 @@
      <section class="section dashboard">
           <div class="card">
                <div class="card-body ">
-                    <mat-form-field appearance="outline" class="col-sm-4">
-                         <mat-label>Destination</mat-label>
-                         <input matInput #DestinationId="ngModel" name="DestinationName"
-                              (ngModelChange)="filterDestinationList($event)" placeholder="Search By Destination"
-                              [(ngModel)]="Enquiry.DestinationName" [matAutocomplete]="autoDestination" required />
-                         <mat-autocomplete #autoDestination="matAutocomplete"
-                              (optionSelected)="afterDestinationSelected($event)">
-                              <mat-option *ngFor="let options of DestinationList" [id]="options.DestinationId"
-                                   [value]="options.DestinationName">{{ options.DestinationName }}</mat-option>
-                         </mat-autocomplete>
-                         <button mat-icon-button matSuffix *ngIf="Enquiry.DestinationName" color="primary"
-                              (click)="clearDestination()">
-                              <mat-icon><i class="ri-close-circle-line"></i> </mat-icon>
-                         </button>
-                         <mat-error>Required field !!</mat-error>
-                    </mat-form-field>
 
-                    <mat-form-field appearance="outline" class="col-sm-4">
-                                             <mat-label>Months</mat-label>
-                                             <mat-select #Month="ngModel" name="Month"
-                                                  [(ngModel)]="Enquiry.Month" required>
-                                                  <mat-option [value]="Month.Key"
-                                                       *ngFor="let Month of MonthList">{{Month.Value}}</mat-option>
-                                             </mat-select>
-                                             <mat-error
-                                                  *ngIf="(Month.dirty  || Month.touched) || (Month.invalid && isSubmitted)">
-                                                  Flight Option is <strong>required</strong>
-                                             </mat-error>
-                                        </mat-form-field>
+                    <div class="row mb-3">
+
+                         <mat-form-field appearance="outline" class="col-sm-3">
+                              <mat-label>Destination</mat-label>
+                              <input matInput #DestinationId="ngModel" name="DestinationName"
+                                   (ngModelChange)="filterDestinationList($event)" placeholder="Search By Destination"
+                                   [(ngModel)]="Enquiry.DestinationName" [matAutocomplete]="autoDestination" />
+                              <mat-autocomplete #autoDestination="matAutocomplete"
+                                   (optionSelected)="afterDestinationSelected($event)">
+                                   <mat-option *ngFor="let options of DestinationList" [id]="options.DestinationId"
+                                        [value]="options.DestinationName">{{ options.DestinationName }}</mat-option>
+                              </mat-autocomplete>
+                              <button mat-icon-button matSuffix *ngIf="Enquiry.DestinationName" color="primary"
+                                   (click)="clearDestination()">
+                                   <mat-icon><i class="ri-close-circle-line"></i> </mat-icon>
+                              </button>
+
+                         </mat-form-field>
+
+                         <mat-form-field appearance="outline" class="col-sm-2">
+                              <mat-label>Months</mat-label>
+                              <mat-select [(ngModel)]="Enquiry.Month"
+                                   (selectionChange)="getEnquiryList(Enquiry.DestinationId)">
+
+                                   <mat-option *ngFor="let Month of MonthList" [value]="Month.Key">{{ Month.Value
+                                        }}</mat-option>
+                              </mat-select>
+                         </mat-form-field>
+                         <mat-form-field appearance="outline" class="col-sm-2">
+                              <mat-label>From Date</mat-label>
+                              <input matInput [(ngModel)]="Enquiry.FromDate" [matDatepicker]="fromPicker"
+                                   name="FromDate">
+                              <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
+                              <mat-datepicker #fromPicker></mat-datepicker>
+                         </mat-form-field>
+
+                         <mat-form-field appearance="outline" class="col-sm-2">
+                              <mat-label>To Date</mat-label>
+                              <input matInput [(ngModel)]="Enquiry.ToDate" [matDatepicker]="toPicker" name="ToDate">
+                              <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
+                              <mat-datepicker #toPicker></mat-datepicker>
+                         </mat-form-field>
+                         <button mat-raised-button color="primary" (click)="getEnquiryList(Enquiry.DestinationId)"
+                              class="col-sm-2">Filter</button>
+                    </div>
+
+
                     <div class="dataTable-top">
                          <div class="dataTable-dropdown d-flex">
                               <select class="dataTable-selector form-select form-select-sm" [(ngModel)]="itemPerPage">
@@ -67,6 +86,7 @@
                               <thead>
                                    <tr>
                                         <th>S.No</th>
+                                        <th style="cursor:pointer;" (click)="sort('EnquiryCode')">Enquiry Code</th>
                                         <th>Enquiry Date</th>
                                         <th>Primary Guest</th>
                                         <!-- <th style="cursor:pointer;" (click)="sort('EnquiryName')">Enquiry Name</th> -->
@@ -95,6 +115,7 @@
                                    <tr
                                         *ngFor="let item of EnquiryList | filter:Search | orderBy:sortKey:reverse | paginate: { itemsPerPage: itemPerPage, currentPage: p }; let i = index;">
                                         <td>{{ (itemPerPage * (p - 1)) + i + 1 }}</td>
+                                        <td>{{ item.EnquiryCode }}</td>
                                         <td>{{ item.CreatedOn|date:"dd-MM-yy" }}</td>
                                         <td>{{ item.PrimaryGuestName }}</td>
                                         <td>{{ item.MoblieNo }}</td>
@@ -319,12 +340,30 @@
                                                   Flight Option is <strong>required</strong>
                                              </mat-error>
                                         </mat-form-field>
+
+                                        <!-- AmountQuoted -->
                                         <mat-form-field appearance="outline" class="col-sm-4">
                                              <mat-label>Amount Quoted</mat-label>
                                              <input matInput #AmountQuoted="ngModel" name="AmountQuoted"
                                                   [(ngModel)]="Enquiry.AmountQuoted" autofocus>
 
                                         </mat-form-field>
+
+                                        <!-- enquiry status -->
+                                        <mat-form-field appearance="outline" class="col-sm-4">
+                                             <mat-label>Enquiry Status</mat-label>
+                                             <mat-select #EnquiryStatus="ngModel" name="EnquiryStatus"
+                                                  [(ngModel)]="Enquiry.EnquiryStatus" required>
+                                                  <mat-option [value]="EnquiryStatus.Key"
+                                                       *ngFor="let EnquiryStatus of EnquiryStatusList">{{EnquiryStatus.Value}}</mat-option>
+                                             </mat-select>
+                                             <mat-error
+                                                  *ngIf="(EnquiryStatus.dirty  || EnquiryStatus.touched) || (EnquiryStatus.invalid && isSubmitted)">
+                                                  Flight Option is <strong>required</strong>
+                                             </mat-error>
+                                        </mat-form-field>
+
+
 
                                    </div>
                               </div>
