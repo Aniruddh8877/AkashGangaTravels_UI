@@ -29,7 +29,7 @@
                                         <!-- <h5 class="card-title">Search Guest Through Enquiry No./Guest Name/ Mobile No. </h5> -->
                                         <label class="col-sm-8 col-form-label text-primary">Search Guest Through
                                              Enquiry No./Guest Name/ Mobile No.</label>
-                                        <form #formPatientDetails="ngForm">
+                                        <form #formBookingDetails="ngForm">
                                              <div class="row">
 
                                                   <mat-form-field appearance="outline" class="col-lg-5">
@@ -96,7 +96,7 @@
                                         <h5 class="card-title" style="color:darkgoldenrod!important">Package Details
                                         </h5>
                                         <div class="d-flex flex-wrap gap-1">
-                                             <form #formPatientDetails="ngForm">
+                                             <form #formBookingDetails="ngForm">
                                                   <div class="row">
                                                        <!-- Destination Autocomplete -->
                                                        <mat-form-field appearance="outline" class="col-sm-3 form-group">
@@ -137,8 +137,8 @@
                                                        <mat-form-field appearance="outline" class="col-lg-2">
                                                             <mat-label>Arrival Date</mat-label>
                                                             <input matInput [matDatepicker]="picker1"
-                                                                 [(ngModel)]="Booking.ArrivalDate" name="ArrivalDate"
-                                                                 #ArrivalDate="ngModel" required
+                                                                 [(ngModel)]="Booking.ArivalDate" name="ArivalDate"
+                                                                 #ArivalDate="ngModel" required
                                                                  (ngModelChange)="onDateFieldsChange()" />
                                                             <mat-datepicker-toggle matSuffix [for]="picker1"
                                                                  class="small-datepicker-icon"></mat-datepicker-toggle>
@@ -182,7 +182,8 @@
                                                        <mat-form-field appearance="outline" class="col-lg-2">
                                                             <mat-label>No. of Room</mat-label>
                                                             <input matInput type="number" [(ngModel)]="Booking.NoOfRoom"
-                                                                 name="NoOfRoom" required class="no-spinner" />
+                                                                 #NoOfRoom="ngModel" name="NoOfRoom" required
+                                                                 class="no-spinner" />
                                                        </mat-form-field>
 
                                                        <mat-form-field appearance="outline" class="col-lg-2">
@@ -249,11 +250,10 @@
                                                   </mat-form-field>
 
                                                   <!-- Name -->
-                                                  <mat-form-field appearance="outline" class="col-lg-4">
+                                                  <mat-form-field appearance="outline" class="col-lg-3">
                                                        <mat-label>Name</mat-label>
-                                                       <input matInput name="Rate" [(ngModel)]="Guest.PrimaryGuestName"
-                                                             required
-                                                            class="no-spinner" />
+                                                       <input matInput name="Rate" [(ngModel)]="Guest.GuestName"
+                                                            required class="no-spinner" />
                                                   </mat-form-field>
                                                   <!-- Age -->
                                                   <mat-form-field appearance="outline" class="col-sm-2">
@@ -261,10 +261,22 @@
                                                        <input matInput type="number" name="Age" [(ngModel)]="Guest.Age"
                                                             required class="no-spinner" />
                                                   </mat-form-field>
+
+                                                  <!-- DOB-->
+                                                  <mat-form-field appearance="outline" class="col-lg-2">
+                                                       <mat-label>Dob </mat-label>
+                                                       <input matInput [matDatepicker]="DOBPicker"
+                                                            [(ngModel)]="Guest.DOB" name="DOB" readonly
+                                                            (click)="DOBPicker.open()" />
+                                                       <mat-datepicker-toggle matSuffix
+                                                            [for]="DOBPicker"></mat-datepicker-toggle>
+                                                       <mat-datepicker #DOBPicker disabled="false"></mat-datepicker>
+                                                  </mat-form-field>
+
                                                   <!-- Mobile No -->
                                                   <mat-form-field appearance="outline" class="col-lg-3">
                                                        <mat-label>Mobile No</mat-label>
-                                                       <input matInput name="Amount" [(ngModel)]="Guest.MoblieNo"
+                                                       <input matInput name="Amount" [(ngModel)]="Guest.MobileNo"
                                                             required class="no-spinner" />
                                                   </mat-form-field>
 
@@ -287,8 +299,8 @@
                                                   <mat-form-field appearance="outline" class="col-lg-3"
                                                        *ngIf="Booking.FlightOption === 1">
                                                        <mat-label>ID No.</mat-label>
-                                                       <input matInput type="number" name="IdNo"
-                                                            [(ngModel)]="Guest.IdNo" required class="no-spinner" />
+                                                       <input matInput type="number" name="IDNo" #IDNo="ngModel"
+                                                            [(ngModel)]="Guest.IDNo" required class="no-spinner" />
                                                   </mat-form-field>
 
                                                   <!-- GSTIN No. -->
@@ -301,69 +313,55 @@
 
 
                                                   <div appearance="outline" class="col-sm-1">
-                                                       <button mat-flat-button color="accent"
-                                                            (click)="addGuest()">
+                                                       <button mat-flat-button color="accent" (click)="addGuest()">
                                                             ADD
                                                        </button>
                                                   </div>
                                              </div>
-                                              </form>
-                                             <a class="list-group-item list-group-item-action"
-                                                  *ngIf="SelectedGuestDetailList.length > 0">
-                                                  <div class="row">
-                                                       <div class="col-sm-19 table-responsive">
-                                                            <table class="table table-bordered table-hover table-lg"
-                                                                 id="table_list">
-                                                                 <thead class="thead-light">
-                                                                      <tr>
-                                                                           <th class="text-center">#</th>
-                                                                           <th>Title</th>
-                                                                           <th class="text-right">Guest Name</th>
-                                                                           <th class="text-right">Age</th>
-                                                                           <th class="text-center">Mobile No.</th>
-                                                                           <th class="text-right">ID No.</th>
-                                                                           <!-- <th class="text-right">Lin</th> -->
-                                                                           <th>Action</th>
-                                                                      </tr>
-                                                                 </thead>
+                                        </form>
+                                        <a class="list-group-item list-group-item-action"
+                                             *ngIf="SelectedGuestDetailList.length > 0">
+                                             <div class="row">
+                                                  <div class="col-sm-19 table-responsive">
+                                                       <table class="table table-bordered table-hover table-lg"
+                                                            id="table_list">
+                                                            <thead class="thead-light">
+                                                                 <tr>
+                                                                      <th class="text-center">#</th>
+                                                                      <th>Title</th>
+                                                                      <th class="text-left">Guest Name</th>
+                                                                      <th class="text-center">Age</th>
+                                                                      <th class="text-center">Mobile No.</th>
+                                                                      <th class="text-center">ID No.</th>
+                                                                      <!-- <th class="text-right">Lin</th> -->
+                                                                      <th>Action</th>
+                                                                 </tr>
+                                                            </thead>
 
-                                                                 <tbody>
-                                                                      <tr
-                                                                           *ngFor=" let model of SelectedGuestDetailList; let i = index">
-                                                                           <td class="text-center">{{ i + 1 }}</td>
+                                                            <tbody>
+                                                                 <tr
+                                                                      *ngFor="let model of SelectedGuestDetailList; let i = index">
+                                                                      <td class="text-center">{{ i + 1 }}</td>
+                                                                      <td class="text-center">{{
+                                                                           AllTitleList[model.Title] }}</td>
+                                                                      <td class="text-left">{{ model.GuestName }}</td>
+                                                                      <td class="text-center">{{ model.Age }}</td>
+                                                                      <td class="text-center">{{ model.MobileNo }}</td>
+                                                                      <td class="text-center">{{ model.IDNo }}</td>
+                                                                      <td class="text-center">
+                                                                           <button (click)="RemoveGuest(i)"
+                                                                                class="btn btn-sm btn-danger">
+                                                                                <i class="bi bi-trash-fill"></i>
+                                                                           </button>
+                                                                      </td>
+                                                                 </tr>
 
-                                                                           <td>
-                                                                                {{ AllTitleList[model.Title] }}
-                                                                           </td>
-                                                                           <td class="text-right">
-                                                                                {{ model.PrimaryGuestName }}
-                                                                           </td>
-                                                                           <td class="text-right">
-                                                                                {{ model.Age }}
-                                                                           </td>
-                                                                           <td class="text-center">
-                                                                                {{ model.MoblieNo }}
-                                                                           </td>
-                                                                           <td class="text-right">
-                                                                                {{ model.IDNo ?? 'Not Applicable' }}
-                                                                           </td>
-                                                                           <!-- <td class="text-right">
-                                                                                {{ model.LineTotal }}
-                                                                           </td> -->
-
-                                                                           <td>
-                                                                                <button (click)="RemoveGuest(i)"
-                                                                                     class="btn btn-sm btn-danger">
-                                                                                     <i class="bi bi-trash-fill"></i>
-                                                                                </button>
-                                                                           </td>
-                                                                      </tr>
-                                                                 </tbody>
-                                                            </table>
-                                                       </div>
+                                                            </tbody>
+                                                       </table>
                                                   </div>
-                                             </a>
-                                       
+                                             </div>
+                                        </a>
+
                                    </li>
 
                               </ul>
@@ -393,6 +391,10 @@
                                         <tr>
                                              <th>Enquery Date</th>
                                              <td>{{Booking.CreatedOn|date:"dd-MM-yy"}}</td>
+                                        </tr>
+                                        <tr>
+                                             <th>Enquiry Code</th>
+                                             <td>{{Booking.EnquiryCode}}</td>
                                         </tr>
                                         <tr>
                                              <th>Travel Plan Date</th>
