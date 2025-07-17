@@ -1,0 +1,20 @@
+.card-title {
+    padding: 05px 0 05px 0 !important;
+    font-size: 18px !important;
+    font-weight: 500 !important;
+    color: #012970 !important;
+    font-family: "Poppins", sans-serif !important;
+}
+.card-body {
+    margin-top: 10px;
+    margin-bottom: 10px !important;
+}
+.row {
+    --bs-gutter-x: 0.5rem;
+    --bs-gutter-y: 0;
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: calc(-1 * var(--bs-gutter-y));
+    margin-right: calc(-.5 * var(--bs-gutter-x));
+    margin-left: calc(-.5 * var(--bs-gutter-x));
+}

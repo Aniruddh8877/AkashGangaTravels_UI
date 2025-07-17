@@ -114,3 +114,12 @@ export enum Months {
     November = 11,
     December = 12
 }
+
+export enum Title{
+    Mr = 1,
+    Master = 2,
+    Miss = 3,
+    Misses = 4,
+    Dr = 5,
+    Prof = 6
+}

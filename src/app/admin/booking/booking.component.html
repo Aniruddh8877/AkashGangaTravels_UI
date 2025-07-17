@@ -1,1 +1,466 @@
-<p>booking works!</p>
+<app-progress *ngIf="dataLoading"></app-progress>
+<main id="main" class="main" *ngIf="action.ResponseReceived">
+     <div class="row">
+          <div class="pagetitle dashboard col-sm-8">
+               <h1>{{ action.MenuTitle }}</h1>
+               <nav>
+                    <ol class="breadcrumb">
+                         <li class="breadcrumb-item">
+                              <a routerLink="admin/admin-dashboard">Home</a>
+                         </li>
+                         <li class="breadcrumb-item">{{ action.ParentMenuTitle }}</li>
+                         <li class="breadcrumb-item active">{{ action.MenuTitle }}</li>
+                    </ol>
+               </nav>
+          </div>
+     </div>
+
+     <div class="section">
+          <div class="row">
+               <div class="col-lg-9">
+                    <div class="card">
+                         <div class="card-body">
+                              <!-- <h5 class="card-title">With Contextual Classes</h5> -->
+
+                              <!-- List group With Contextual classes -->
+                              <ul class="list-group">
+                                   <li class="list-group-item" style="background-color:#fff">
+
+                                        <!-- <h5 class="card-title">Search Guest Through Enquiry No./Guest Name/ Mobile No. </h5> -->
+                                        <label class="col-sm-8 col-form-label text-primary">Search Guest Through
+                                             Enquiry No./Guest Name/ Mobile No.</label>
+                                        <form #formPatientDetails="ngForm">
+                                             <div class="row">
+
+                                                  <mat-form-field appearance="outline" class="col-lg-5">
+                                                       <mat-label>Search Through Enquiry No./Guest Name/ Mobile
+                                                            No.</mat-label>
+
+                                                       <input type="text" matInput [matAutocomplete]="auto"
+                                                            [(ngModel)]="Booking.EnquiryCode"
+                                                            (ngModelChange)="onSearchChange($event)" name="EnquiryCode"
+                                                            required class="no-spinner" />
+
+                                                       <mat-autocomplete #auto="matAutocomplete"
+                                                            (optionSelected)="onEnquirySelect($event.option.value)">
+                                                            <mat-option *ngFor="let item of filteredEnquiryList"
+                                                                 [value]="item">
+                                                                 {{ item.EnquiryCode }} - {{ item.PrimaryGuestName }} -
+                                                                 {{ item.MoblieNo}}
+                                                            </mat-option>
+                                                       </mat-autocomplete>
+                                                  </mat-form-field>
+
+                                                  <mat-form-field appearance="outline" class="col-lg-2">
+                                                       <mat-label>Booking Date</mat-label>
+                                                       <input matInput [matDatepicker]="BookingDatePicker"
+                                                            [(ngModel)]="Booking.BookingDate" name="BookingDate"
+                                                            readonly (click)="BookingDatePicker.open()" />
+                                                       <mat-datepicker-toggle matSuffix
+                                                            [for]="BookingDatePicker"></mat-datepicker-toggle>
+                                                       <mat-datepicker #BookingDatePicker
+                                                            disabled="false"></mat-datepicker>
+                                                  </mat-form-field>
+
+                                                  <mat-form-field appearance="outline" class="col-sm-2">
+                                                       <mat-label>Flight Option</mat-label>
+                                                       <mat-select #FlightOption="ngModel" name="FlightOption"
+                                                            [(ngModel)]="Booking.FlightOption" required>
+                                                            <mat-option [value]="FlightOption.Key"
+                                                                 *ngFor="let FlightOption of FlightOptionList">{{FlightOption.Value}}</mat-option>
+                                                       </mat-select>
+                                                       <mat-error
+                                                            *ngIf="(FlightOption.dirty  || FlightOption.touched) || (FlightOption.invalid && isSubmitted)">
+                                                            Flight Option is <strong>required</strong>
+                                                       </mat-error>
+                                                  </mat-form-field>
+
+                                                  <mat-form-field appearance="outline" class="col-lg-3">
+                                                       <mat-label>Agent Name</mat-label>
+                                                       <mat-select [(ngModel)]="Booking.AgentId" name="AgentId"
+                                                            #AgentId="ngModel">
+                                                            <mat-option *ngFor="let agent of AgentList"
+                                                                 [value]="agent.AgentId">
+                                                                 {{ agent.ContactPersonName }}
+                                                            </mat-option>
+                                                       </mat-select>
+                                                  </mat-form-field>
+
+
+                                             </div>
+                                        </form>
+
+                                   </li>
+
+                                   <li class="list-group-item" style="background-color:#fff">
+                                        <h5 class="card-title" style="color:darkgoldenrod!important">Package Details
+                                        </h5>
+                                        <div class="d-flex flex-wrap gap-1">
+                                             <form #formPatientDetails="ngForm">
+                                                  <div class="row">
+                                                       <!-- Destination Autocomplete -->
+                                                       <mat-form-field appearance="outline" class="col-sm-3 form-group">
+                                                            <mat-label>Destination Name</mat-label>
+                                                            <mat-select #destinationRef="ngModel" name="DestinationName"
+                                                                 [(ngModel)]="Booking.DestinationId"
+                                                                 (selectionChange)="onDestinationChange($event.value)"
+                                                                 required>
+                                                                 <mat-option *ngFor="let option of DestinationList"
+                                                                      [value]="option.DestinationId">
+                                                                      {{ option.DestinationName }}
+                                                                 </mat-option>
+                                                            </mat-select>
+                                                            <mat-error
+                                                                 *ngIf="(destinationRef.dirty || destinationRef.touched || (destinationRef.invalid && isSubmitted))">
+                                                                 Destination is <strong>required</strong>
+                                                            </mat-error>
+                                                       </mat-form-field>
+
+                                                       <!-- Package -->
+                                                       <mat-form-field appearance="outline" class="col-sm-3 form-group">
+                                                            <mat-label>Package Name</mat-label>
+                                                            <mat-select #packageRef="ngModel" name="PackageId"
+                                                                 [(ngModel)]="Booking.PackageId" required>
+                                                                 <mat-option *ngFor="let option of PackageList"
+                                                                      [value]="option.PackageId">
+                                                                      {{ option.PackageName }}
+                                                                 </mat-option>
+                                                            </mat-select>
+                                                            <mat-error
+                                                                 *ngIf="(packageRef.dirty || packageRef.touched || (packageRef.invalid && isSubmitted))">
+                                                                 Package is <strong>required</strong>
+                                                            </mat-error>
+                                                       </mat-form-field>
+
+                                                       <!-- Travel date -->
+                                                       <!-- Arrival Date -->
+                                                       <mat-form-field appearance="outline" class="col-lg-2">
+                                                            <mat-label>Arrival Date</mat-label>
+                                                            <input matInput [matDatepicker]="picker1"
+                                                                 [(ngModel)]="Booking.ArrivalDate" name="ArrivalDate"
+                                                                 #ArrivalDate="ngModel" required
+                                                                 (ngModelChange)="onDateFieldsChange()" />
+                                                            <mat-datepicker-toggle matSuffix [for]="picker1"
+                                                                 class="small-datepicker-icon"></mat-datepicker-toggle>
+                                                            <mat-datepicker #picker1></mat-datepicker>
+                                                       </mat-form-field>
+
+                                                       <!-- No of Days -->
+                                                       <mat-form-field appearance="outline" class="col-lg-2">
+                                                            <mat-label>No Of Day</mat-label>
+                                                            <input matInput type="number" name="NoOfDay"
+                                                                 #NoOfDay="ngModel" [(ngModel)]="Booking.NoOfDay"
+                                                                 required (ngModelChange)="onDateFieldsChange()" />
+                                                       </mat-form-field>
+
+                                                       <!-- Departure Date -->
+                                                       <mat-form-field appearance="outline" class="col-lg-2">
+                                                            <mat-label>Departure Date</mat-label>
+                                                            <input matInput [matDatepicker]="picker2"
+                                                                 #DepartureDate="ngModel"
+                                                                 [(ngModel)]="Booking.DepartureDate"
+                                                                 name="DepartureDate" required
+                                                                 (ngModelChange)="onDateFieldsChange()" />
+                                                            <mat-datepicker-toggle matSuffix [for]="picker2"
+                                                                 class="small-datepicker-icon"></mat-datepicker-toggle>
+                                                            <mat-datepicker #picker2></mat-datepicker>
+                                                       </mat-form-field>
+
+
+
+                                                       <mat-form-field appearance="outline" class="col-lg-2">
+                                                            <mat-label>Hotel Category</mat-label>
+                                                            <mat-select [(ngModel)]="Booking.HotelCategoryId"
+                                                                 name="HotelCategoryName" required>
+                                                                 <mat-option *ngFor="let category of HotelCategoryList"
+                                                                      [value]="category.HotelCategoryId">
+                                                                      {{ category.HotelCategoryName }}
+                                                                 </mat-option>
+                                                            </mat-select>
+                                                       </mat-form-field>
+
+                                                       <mat-form-field appearance="outline" class="col-lg-2">
+                                                            <mat-label>No. of Room</mat-label>
+                                                            <input matInput type="number" [(ngModel)]="Booking.NoOfRoom"
+                                                                 name="NoOfRoom" required class="no-spinner" />
+                                                       </mat-form-field>
+
+                                                       <mat-form-field appearance="outline" class="col-lg-2">
+                                                            <mat-label>Meal Plan</mat-label>
+                                                            <mat-select [(ngModel)]="Booking.MealPlan" name="MealPlan"
+                                                                 required>
+                                                                 <mat-option *ngFor="let plan of MealPlanList"
+                                                                      [value]="plan.Key">
+                                                                      {{ plan.Value }}
+                                                                 </mat-option>
+                                                            </mat-select>
+                                                       </mat-form-field>
+
+
+
+                                                       <!-- Rate -->
+                                                       <!-- Rate Per-Person -->
+                                                       <mat-form-field appearance="outline" class="col-lg-2">
+                                                            <mat-label>Rate Per-Person</mat-label>
+                                                            <input matInput type="tel" name="RatePerson" #Rate="ngModel"
+                                                                 [(ngModel)]="Booking.AmountQuoted"
+                                                                 (ngModelChange)="calculateTotalAmount()" required />
+                                                       </mat-form-field>
+
+                                                       <!-- No of PX -->
+                                                       <mat-form-field appearance="outline" class="col-lg-2">
+                                                            <mat-label>No of PX</mat-label>
+                                                            <input matInput name="NoOfPerson" #NoOfPerson="ngModel"
+                                                                 [(ngModel)]="Booking.NoOfPerson"
+                                                                 (ngModelChange)="calculateTotalAmount()" required />
+                                                       </mat-form-field>
+
+                                                       <!-- Total Amount -->
+
+                                                       <mat-form-field appearance="outline" class="col-lg-2">
+                                                            <mat-label>Total Amount</mat-label>
+                                                            <input matInput type="tel" name="TotalAmount"
+                                                                 #TotalAmount="ngModel"
+                                                                 [(ngModel)]="Booking.TotalAmount"
+                                                                 (click)="calculateTotalAmount()" readonly />
+                                                       </mat-form-field>
+
+
+
+
+
+                                                  </div>
+                                             </form>
+                                        </div>
+                                   </li>
+                                   <li class="list-group-item" style="background-color:#fff">
+                                        <h5 class="card-title" style="color:darkgreen!important">Add New Guest </h5>
+                                        <form #formGuestDetails="ngForm">
+                                             <div class="row">
+                                                  <!-- Title -->
+                                                  <mat-form-field appearance="outline" class="col-lg-2">
+                                                       <mat-label>Title</mat-label>
+                                                       <mat-select [(ngModel)]="Guest.Title" name="Title" required>
+                                                            <mat-option *ngFor="let plan of TitleList"
+                                                                 [value]="plan.Key">
+                                                                 {{ plan.Value }}
+                                                            </mat-option>
+                                                       </mat-select>
+                                                  </mat-form-field>
+
+                                                  <!-- Name -->
+                                                  <mat-form-field appearance="outline" class="col-lg-4">
+                                                       <mat-label>Name</mat-label>
+                                                       <input matInput name="Rate" [(ngModel)]="Guest.PrimaryGuestName"
+                                                             required
+                                                            class="no-spinner" />
+                                                  </mat-form-field>
+                                                  <!-- Age -->
+                                                  <mat-form-field appearance="outline" class="col-sm-2">
+                                                       <mat-label>Age</mat-label>
+                                                       <input matInput type="number" name="Age" [(ngModel)]="Guest.Age"
+                                                            required class="no-spinner" />
+                                                  </mat-form-field>
+                                                  <!-- Mobile No -->
+                                                  <mat-form-field appearance="outline" class="col-lg-3">
+                                                       <mat-label>Mobile No</mat-label>
+                                                       <input matInput name="Amount" [(ngModel)]="Guest.MoblieNo"
+                                                            required class="no-spinner" />
+                                                  </mat-form-field>
+
+                                                  <!-- ID Type -->
+
+                                                  <mat-form-field appearance="outline" class="col-lg-2"
+                                                       *ngIf="Booking.FlightOption === 1">
+                                                       <mat-label>Id Type Name</mat-label>
+                                                       <mat-select [(ngModel)]="Guest.IDTypeName" name="IDTypeName"
+                                                            required>
+                                                            <mat-option *ngFor="let category of IDTypeList"
+                                                                 [value]="category.IDTypeId">
+                                                                 {{ category.IDTypeName }}
+                                                            </mat-option>
+                                                       </mat-select>
+                                                  </mat-form-field>
+
+
+                                                  <!-- ID No. -->
+                                                  <mat-form-field appearance="outline" class="col-lg-3"
+                                                       *ngIf="Booking.FlightOption === 1">
+                                                       <mat-label>ID No.</mat-label>
+                                                       <input matInput type="number" name="IdNo"
+                                                            [(ngModel)]="Guest.IdNo" required class="no-spinner" />
+                                                  </mat-form-field>
+
+                                                  <!-- GSTIN No. -->
+                                                  <mat-form-field appearance="outline" class="col-lg-3"
+                                                       *ngIf="Booking.FlightOption === 1">
+                                                       <mat-label>GSTIN No.</mat-label>
+                                                       <input matInput type="number" name="GSTNo"
+                                                            [(ngModel)]="Guest.GSTNo" required class="no-spinner" />
+                                                  </mat-form-field>
+
+
+                                                  <div appearance="outline" class="col-sm-1">
+                                                       <button mat-flat-button color="accent"
+                                                            (click)="addGuest()">
+                                                            ADD
+                                                       </button>
+                                                  </div>
+                                             </div>
+                                              </form>
+                                             <a class="list-group-item list-group-item-action"
+                                                  *ngIf="SelectedGuestDetailList.length > 0">
+                                                  <div class="row">
+                                                       <div class="col-sm-19 table-responsive">
+                                                            <table class="table table-bordered table-hover table-lg"
+                                                                 id="table_list">
+                                                                 <thead class="thead-light">
+                                                                      <tr>
+                                                                           <th class="text-center">#</th>
+                                                                           <th>Title</th>
+                                                                           <th class="text-right">Guest Name</th>
+                                                                           <th class="text-right">Age</th>
+                                                                           <th class="text-center">Mobile No.</th>
+                                                                           <th class="text-right">ID No.</th>
+                                                                           <!-- <th class="text-right">Lin</th> -->
+                                                                           <th>Action</th>
+                                                                      </tr>
+                                                                 </thead>
+
+                                                                 <tbody>
+                                                                      <tr
+                                                                           *ngFor=" let model of SelectedGuestDetailList; let i = index">
+                                                                           <td class="text-center">{{ i + 1 }}</td>
+
+                                                                           <td>
+                                                                                {{ AllTitleList[model.Title] }}
+                                                                           </td>
+                                                                           <td class="text-right">
+                                                                                {{ model.PrimaryGuestName }}
+                                                                           </td>
+                                                                           <td class="text-right">
+                                                                                {{ model.Age }}
+                                                                           </td>
+                                                                           <td class="text-center">
+                                                                                {{ model.MoblieNo }}
+                                                                           </td>
+                                                                           <td class="text-right">
+                                                                                {{ model.IDNo ?? 'Not Applicable' }}
+                                                                           </td>
+                                                                           <!-- <td class="text-right">
+                                                                                {{ model.LineTotal }}
+                                                                           </td> -->
+
+                                                                           <td>
+                                                                                <button (click)="RemoveGuest(i)"
+                                                                                     class="btn btn-sm btn-danger">
+                                                                                     <i class="bi bi-trash-fill"></i>
+                                                                                </button>
+                                                                           </td>
+                                                                      </tr>
+                                                                 </tbody>
+                                                            </table>
+                                                       </div>
+                                                  </div>
+                                             </a>
+                                       
+                                   </li>
+
+                              </ul>
+
+                         </div>
+                         <div class="card-footer">
+                              <div class="d-flex justify-content-center items-center">
+                                   <button type="submit" mat-raised-button class="mdc-button-final w-50" color="primary"
+                                        (click)="saveBooking()">
+                                        Submit
+                                   </button>
+                              </div>
+                         </div>
+                    </div>
+
+               </div>
+
+               <div class="col-lg-3">
+
+                    <div class="card">
+                         <div class="card-body">
+                              <h5 class="card-title">Enquery Details</h5>
+                              <!-- Default Table -->
+                              <table class="table">
+
+                                   <tbody>
+                                        <tr>
+                                             <th>Enquery Date</th>
+                                             <td>{{Booking.CreatedOn|date:"dd-MM-yy"}}</td>
+                                        </tr>
+                                        <tr>
+                                             <th>Travel Plan Date</th>
+                                             <td>{{Booking.TravelPlanDate|date:"dd-MM-yy"}}</td>
+                                        </tr>
+                                        <tr>
+                                             <th>Destination</th>
+                                             <td>{{Booking.DestinationName}}</td>
+                                        </tr>
+                                        <tr>
+                                             <th>Package</th>
+                                             <td>{{Booking.PackageName}}</td>
+                                        </tr>
+
+
+                                        <tr>
+                                             <th>Enquired By</th>
+                                             <td>{{Booking.CreatedBy}} </td>
+                                        </tr>
+                                        <tr>
+                                             <th>Primary Guest Nameh</th>
+                                             <td>{{Booking.PrimaryGuestName}} </td>
+                                        </tr>
+                                        <tr>
+                                             <th>Moblie No</th>
+                                             <td>{{Booking.MoblieNo}} </td>
+                                        </tr>
+                                        <tr>
+                                             <th>No Of Person </th>
+                                             <td>{{Booking.NoOfPerson}}</td>
+                                        </tr>
+                                        <tr>
+                                             <th>Hotel Category Name</th>
+                                             <td>{{Booking.HotelCategoryName}}</td>
+                                        </tr>
+                                        <tr>
+                                             <th>No Of Rooms</th>
+                                             <td>{{Booking.NoOfRoom}} </td>
+                                        </tr>
+                                        <tr>
+                                             <th>Remarks</th>
+                                             <td>{{Booking.Remarks}} </td>
+                                        </tr>
+                                        <tr>
+                                             <th>MealPlan</th>
+                                             <td>{{AllMealPlanList[Booking.MealPlan]}} </td>
+                                        </tr>
+                                        <tr>
+                                             <th>Flight Option</th>
+                                             <td>{{AllFlightOptionList[Booking.FlightOption]}} </td>
+                                        </tr>
+                                        <tr>
+                                             <th>Amont Quoted</th>
+                                             <td>{{Booking.AmountQuoted}}</td>
+                                        </tr>
+                                        <tr>
+                                             <th>Status</th>
+                                             <td>{{AllEnquiryList[Booking.EnquiryStatus]}}</td>
+                                        </tr>
+                                   </tbody>
+                              </table>
+                              <!-- End Default Table Example -->
+                         </div>
+                    </div>
+               </div>
+          </div>
+     </div>
+
+
+
+</main>

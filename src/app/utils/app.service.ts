@@ -70,7 +70,10 @@ export class AppService {
   deleteAgent(obj: any) {
     return this.http.post(this.apiUrl + "Agent/deleteAgent", obj, { headers: this.headers })
   }
-
+                                            // Booking
+  getBookingList(obj: any) {
+    return this.http.post(this.apiUrl + "Booking/SaveResignation", obj, { headers: this.headers })
+  }
   getIDTypeList(obj: any) {
     return this.http.post(this.apiUrl + "IDType/IDTypeList", obj, { headers: this.headers })
   }

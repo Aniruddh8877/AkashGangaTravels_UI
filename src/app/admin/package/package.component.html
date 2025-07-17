@@ -159,10 +159,10 @@
 
                                         <mat-form-field appearance="outline" class="col-sm-12">
                                              <mat-label>Package Name</mat-label>
-                                             <input matInput #CityName="ngModel" name="CityName"
+                                             <input matInput #PackageName="ngModel" name="PackageName"
                                                   [(ngModel)]="Package.PackageName" required autofocus>
                                              <mat-error
-                                                  *ngIf="(CityName.dirty  || CityName.touched) || (CityName.invalid && isSubmitted)">
+                                                  *ngIf="(PackageName.dirty  || PackageName.touched) || (PackageName.invalid && isSubmitted)">
                                                   Package name is <strong>required</strong>
                                              </mat-error>
                                         </mat-form-field>

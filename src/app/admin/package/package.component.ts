@@ -99,9 +99,9 @@ export class PackageComponent {
     this.Package.StateId = event.option.id;
   }
 
-  getPackageList(DestinationId:any) {
+  getPackageList(data: any) {
     const request: RequestModel = {
-      request: this.localService.encrypt(JSON.stringify({DestinationId})).toString()
+      request: this.localService.encrypt(JSON.stringify({})).toString()
     };
     this.dataLoading = true;
     this.service.getPackageList(request).subscribe((response: any) => {
