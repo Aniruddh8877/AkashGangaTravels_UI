@@ -741,3 +741,14 @@ body {
   border-top-left-radius: var(--bs-modal-inner-border-radius);
   border-top-right-radius: var(--bs-modal-inner-border-radius) calc(0.5rem - 1px);
 }
+.mat-mdc-form-field-subscript-wrapper {
+    box-sizing: border-box;
+    width: 100%;
+    position: absolute!important;
+}
+
+.mat-mdc-form-field-bottom-align::before {
+    content: "";
+    display: inline-block;
+    height: 10px!important;
+}

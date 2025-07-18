@@ -16,7 +16,7 @@ export class AppService {
   getImageUrl(): string {
     return ConstantData.getBaseUrl();
   }
-                                                //Destination
+  //Destination
   getDestinationList(obj: any) {
     return this.http.post(this.apiUrl + "Destination/DestinationList", obj, { headers: this.headers })
   }
@@ -26,7 +26,7 @@ export class AppService {
   deleteDestination(obj: any) {
     return this.http.post(this.apiUrl + "Destination/deleteDestination", obj, { headers: this.headers })
   }
-                                               // Hotel Category 
+  // Hotel Category 
   getHotelCategoryList(obj: any) {
     return this.http.post(this.apiUrl + "HotelCategory/HotelCategoryList", obj, { headers: this.headers })
   }
@@ -36,7 +36,7 @@ export class AppService {
   deleteHotelCategory(obj: any) {
     return this.http.post(this.apiUrl + "HotelCategory/deleteHotelCategory", obj, { headers: this.headers })
   }
-                                                // Package
+  // Package
   getPackageList(obj: any) {
     return this.http.post(this.apiUrl + "Package/PackageList", obj, { headers: this.headers })
   }
@@ -49,8 +49,8 @@ export class AppService {
   deletePackage(obj: any) {
     return this.http.post(this.apiUrl + "Package/deletePackage", obj, { headers: this.headers })
   }
-  
-                                                // Enquiry
+
+  // Enquiry
   getEnquiryList(obj: any) {
     return this.http.post(this.apiUrl + "Enquiry/EnquiryList", obj, { headers: this.headers })
   }
@@ -60,19 +60,15 @@ export class AppService {
   deleteEnquiry(obj: any) {
     return this.http.post(this.apiUrl + "Enquiry/deleteEnquriy", obj, { headers: this.headers })
   }
-                                                // Agent
+  // Agent
   getAgentList(obj: any) {
     return this.http.post(this.apiUrl + "Agent/AgentList", obj, { headers: this.headers })
   }
   saveAgent(obj: any) {
     return this.http.post(this.apiUrl + "Agent/saveAgent", obj, { headers: this.headers })
-  } 
+  }
   deleteAgent(obj: any) {
     return this.http.post(this.apiUrl + "Agent/deleteAgent", obj, { headers: this.headers })
-  }
-                                            // Booking
-  getBookingList(obj: any) {
-    return this.http.post(this.apiUrl + "Booking/SaveResignation", obj, { headers: this.headers })
   }
   getIDTypeList(obj: any) {
     return this.http.post(this.apiUrl + "IDType/IDTypeList", obj, { headers: this.headers })
@@ -84,6 +80,13 @@ export class AppService {
     return this.http.post(this.apiUrl + "IDType/deleteIdType", obj, { headers: this.headers })
   }
 
+  // Booking
+  SaveBookingList(obj: any) {
+    return this.http.post(this.apiUrl + "Booking/SaveResignation", obj, { headers: this.headers })
+  }
+  getBookingList(obj:any){
+    return this.http.post(this.apiUrl +"Booking/BookingList", obj,{headers:this.headers})
+  }
   // District
   getDistrictList(obj: any) {
     return this.http.post(this.apiUrl + "District/DistrictList", obj, { headers: this.headers })

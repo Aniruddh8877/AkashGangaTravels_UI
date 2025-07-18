@@ -44,6 +44,7 @@ import { EnquiryComponent } from './admin/enquiry/enquiry.component';
 import { AgentComponent } from './admin/agent/agent.component';
 import { IDTypeComponent } from './admin/idtype/idtype.component';
 import { BookingComponent } from './admin/booking/booking.component';
+import { BookingListComponent } from './admin/booking-list/booking-list.component';
 
 @NgModule({
   declarations: [
@@ -76,7 +77,8 @@ import { BookingComponent } from './admin/booking/booking.component';
     EnquiryComponent,
     AgentComponent,
     IDTypeComponent,
-    BookingComponent
+    BookingComponent,
+    BookingListComponent
   ],
   imports: [
     BrowserModule,

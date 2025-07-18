@@ -24,6 +24,7 @@ import { EnquiryComponent } from './admin/enquiry/enquiry.component';
 import { AgentComponent } from './admin/agent/agent.component';
 import { IDTypeComponent } from './admin/idtype/idtype.component';
 import { BookingComponent } from './admin/booking/booking.component';
+import { BookingListComponent } from './admin/booking-list/booking-list.component';
 
 const routes: Routes = [
   { path: '', redirectTo: "/admin-login", pathMatch: 'full' },
@@ -52,6 +53,7 @@ const routes: Routes = [
       { path: 'Agent', component: AgentComponent },
       { path: 'IDType', component: IDTypeComponent },
       { path: 'Booking', component: BookingComponent },
+      { path: 'BookingList', component: BookingListComponent },
     ]
   },
   { path: 'page-not-found', component: PageNotFoundComponent },

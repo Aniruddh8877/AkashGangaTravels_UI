@@ -36,20 +36,29 @@
                                                        <mat-label>Search Through Enquiry No./Guest Name/ Mobile
                                                             No.</mat-label>
 
-                                                       <input type="text" matInput [matAutocomplete]="auto"
-                                                            [(ngModel)]="Booking.EnquiryCode"
-                                                            (ngModelChange)="onSearchChange($event)" name="EnquiryCode"
-                                                            required class="no-spinner" />
+                                                       <input matInput #SearchEnquiry="ngModel" name="SearchEnquiry"
+                                                            [matAutocomplete]="auto" [(ngModel)]="Booking.SearchEnquiry"
+                                                            (ngModelChange)="onSearchChange($event)" required
+                                                            class="no-spinner" />
+
+                                                       <!-- Clear Button -->
+                                                       <button *ngIf="Booking?.SearchEnquiry" mat-icon-button matSuffix
+                                                            aria-label="Clear" (click)="clearSearch()">
+                                                            <mat-icon>close</mat-icon>
+                                                       </button>
 
                                                        <mat-autocomplete #auto="matAutocomplete"
                                                             (optionSelected)="onEnquirySelect($event.option.value)">
                                                             <mat-option *ngFor="let item of filteredEnquiryList"
                                                                  [value]="item">
-                                                                 {{ item.EnquiryCode }} - {{ item.PrimaryGuestName }} -
-                                                                 {{ item.MoblieNo}}
+                                                                 {{ item.SearchEnquiry }}
                                                             </mat-option>
                                                        </mat-autocomplete>
+                                                       <!-- <mat-error *ngIf="(SearchEnquiry.dirty|| SearchEnquiry.touched)|| (SearchEnquiry.invalid && isSubmitted)">
+                                                            Search Enquiry is <strong>Required</strong>
+                                                       </mat-error> -->
                                                   </mat-form-field>
+
 
                                                   <mat-form-field appearance="outline" class="col-lg-2">
                                                        <mat-label>Booking Date</mat-label>
@@ -81,7 +90,7 @@
                                                             #AgentId="ngModel">
                                                             <mat-option *ngFor="let agent of AgentList"
                                                                  [value]="agent.AgentId">
-                                                                 {{ agent.ContactPersonName }}
+                                                                {{agent.AgentCompanyName}}/ {{ agent.ContactPersonName }}
                                                             </mat-option>
                                                        </mat-select>
                                                   </mat-form-field>
@@ -137,7 +146,7 @@
                                                        <mat-form-field appearance="outline" class="col-lg-2">
                                                             <mat-label>Arrival Date</mat-label>
                                                             <input matInput [matDatepicker]="picker1"
-                                                                 [(ngModel)]="Booking.ArivalDate" name="ArivalDate"
+                                                                 [(ngModel)]="Booking.TravelPlanDate" name="ArivalDate"
                                                                  #ArivalDate="ngModel" required
                                                                  (ngModelChange)="onDateFieldsChange()" />
                                                             <mat-datepicker-toggle matSuffix [for]="picker1"
@@ -253,7 +262,7 @@
                                                   <mat-form-field appearance="outline" class="col-lg-3">
                                                        <mat-label>Name</mat-label>
                                                        <input matInput name="Rate" [(ngModel)]="Guest.GuestName"
-                                                            required class="no-spinner" />
+                                                            #GuestName="ngModel" required class="no-spinner" />
                                                   </mat-form-field>
                                                   <!-- Age -->
                                                   <mat-form-field appearance="outline" class="col-sm-2">
@@ -277,7 +286,7 @@
                                                   <mat-form-field appearance="outline" class="col-lg-3">
                                                        <mat-label>Mobile No</mat-label>
                                                        <input matInput name="Amount" [(ngModel)]="Guest.MobileNo"
-                                                            required class="no-spinner" />
+                                                            #MobileNo="ngModel" required class="no-spinner" />
                                                   </mat-form-field>
 
                                                   <!-- ID Type -->
@@ -286,7 +295,7 @@
                                                        *ngIf="Booking.FlightOption === 1">
                                                        <mat-label>Id Type Name</mat-label>
                                                        <mat-select [(ngModel)]="Guest.IDTypeName" name="IDTypeName"
-                                                            required>
+                                                            #IdTypeName="ngModel" required>
                                                             <mat-option *ngFor="let category of IDTypeList"
                                                                  [value]="category.IDTypeId">
                                                                  {{ category.IDTypeName }}
@@ -307,7 +316,7 @@
                                                   <mat-form-field appearance="outline" class="col-lg-3"
                                                        *ngIf="Booking.FlightOption === 1">
                                                        <mat-label>GSTIN No.</mat-label>
-                                                       <input matInput type="number" name="GSTNo"
+                                                       <input matInput type="number" name="GSTNo" #GSTNo="ngModel"
                                                             [(ngModel)]="Guest.GSTNo" required class="no-spinner" />
                                                   </mat-form-field>
 
@@ -386,19 +395,22 @@
                               <h5 class="card-title">Enquery Details</h5>
                               <!-- Default Table -->
                               <table class="table">
-
-                                   <tbody>
-                                        <tr>
-                                             <th>Enquery Date</th>
-                                             <td>{{Booking.CreatedOn|date:"dd-MM-yy"}}</td>
-                                        </tr>
-                                        <tr>
+                                             <tbody>
+                                        <tr >
                                              <th>Enquiry Code</th>
-                                             <td>{{Booking.EnquiryCode}}</td>
+                                             <td><label #lblEnquiryCode></label></td>
+                                        </tr>
+                                         <tr >
+                                             <th>Flight Option</th>
+                                             <td><label #lblFlightOption></label></td>
+                                        </tr>
+                                        <!-- <tr>
+                                             <th>Enquery Date</th>
+                                             <td>{{Booking.CreatedOn|date:"dd-MM-yyyy"}}</td>
                                         </tr>
                                         <tr>
                                              <th>Travel Plan Date</th>
-                                             <td>{{Booking.TravelPlanDate|date:"dd-MM-yy"}}</td>
+                                             <td>{{Booking.TravelPlanDate|date:"dd-MM-yyyy"}}</td>
                                         </tr>
                                         <tr>
                                              <th>Destination</th>
@@ -409,18 +421,13 @@
                                              <td>{{Booking.PackageName}}</td>
                                         </tr>
 
-
                                         <tr>
-                                             <th>Enquired By</th>
-                                             <td>{{Booking.CreatedBy}} </td>
-                                        </tr>
-                                        <tr>
-                                             <th>Primary Guest Nameh</th>
+                                             <th>Guest Name</th>
                                              <td>{{Booking.PrimaryGuestName}} </td>
                                         </tr>
                                         <tr>
                                              <th>Moblie No</th>
-                                             <td>{{Booking.MoblieNo}} </td>
+                                             <td>{{Booking.MobileNo}} </td>
                                         </tr>
                                         <tr>
                                              <th>No Of Person </th>
@@ -454,7 +461,12 @@
                                              <th>Status</th>
                                              <td>{{AllEnquiryList[Booking.EnquiryStatus]}}</td>
                                         </tr>
+                                        <tr>
+                                             <th>Enquired By</th>
+                                             <td>{{Booking.StaffName}} </td>
+                                        </tr> -->
                                    </tbody>
+                                   
                               </table>
                               <!-- End Default Table Example -->
                          </div>

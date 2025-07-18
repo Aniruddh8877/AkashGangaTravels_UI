@@ -12,7 +12,7 @@
                </nav>
           </div>
           <div class="col-sm-4">
-               <button mat-raised-button class="float-right" color="primary" *ngIf="action.CanCreate"
+               <button mat-raised-button class="float-right" color="warn" *ngIf="action.CanCreate"
                     data-bs-toggle="modal" data-bs-target="#staticBackdrop" (click)="resetForm()">New
                     Enquiry</button>
           </div>
@@ -22,7 +22,7 @@
           <div class="card">
                <div class="card-body ">
 
-                    <div class="row mb-3">
+                    <div class="row">
 
                          <mat-form-field appearance="outline" class="col-sm-3">
                               <mat-label>Destination</mat-label>
@@ -64,8 +64,11 @@
                               <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
                               <mat-datepicker #toPicker></mat-datepicker>
                          </mat-form-field>
-                         <button mat-raised-button color="primary" (click)="getEnquiryList(Enquiry.DestinationId)"
-                              class="col-sm-2">Filter</button>
+                         <button mat-raised-button style="background-color:#e3e2e2"
+                              (click)="getEnquiryList(Enquiry.DestinationId)" class="col-sm-1">
+                              Search <mat-icon style="margin-left: 5px;">search</mat-icon>
+                         </button>
+
                     </div>
 
 
@@ -96,17 +99,8 @@
                                              Destination</th>
                                         <th style="cursor:pointer;" (click)="sort('Package.PackageName')">Package</th>
                                         <th>No. of Person</th>
-                                        <!-- <th style="cursor:pointer;" (click)="sort('HotelCategory.HotelCategoryName')">
-                                             Hotel Category</th> -->
-                                        <!-- <th>Flight Option</th> -->
-                                        <!-- <th>No. of Room</th> -->
-                                        <!-- <th>Meal Plan</th> -->
-                                        <!-- <th>Amount Quoted</th> -->
-                                        <!-- <th>Remarks</th> -->
+                                        <th>Enquired By</th>
                                         <th>Status</th>
-                                        <!--  <th>Created On</th>
-                                        <th>Updated By</th>
-                                        <th>Updated On</th> -->
                                         <th *ngIf="action.CanEdit">Edit</th>
                                         <th *ngIf="action.CanDelete">Delete</th>
                                    </tr>
@@ -116,29 +110,22 @@
                                         *ngFor="let item of EnquiryList | filter:Search | orderBy:sortKey:reverse | paginate: { itemsPerPage: itemPerPage, currentPage: p }; let i = index;">
                                         <td>{{ (itemPerPage * (p - 1)) + i + 1 }}</td>
                                         <td>{{ item.EnquiryCode }}</td>
-                                        <td>{{ item.CreatedOn|date:"dd-MM-yy" }}</td>
+                                        <td>{{ item.CreatedOn|date:"dd-MM-yyyy" }}</td>
                                         <td>{{ item.PrimaryGuestName }}</td>
-                                        <td>{{ item.MoblieNo }}</td>
+                                        <td>{{ item.MobileNo }}</td>
                                         <td>{{ item.TravelPlanDate | date: 'dd-MM-yyyy' }}</td>
                                         <!-- <td>{{ item.EnquiryName }}</td> -->
                                         <td>{{ item.DestinationName}}</td>
                                         <td>{{ item.PackageName }}</td>
                                         <td>{{ item.NoOfPerson }}</td>
-                                        <!-- <td>{{ item.HotelCategoryName }}</td> -->
-                                        <!-- <td>{{ AllMonthList[item.FlightOption] }}</td> -->
-                                        <!-- <td>{{ item.NoOfRoom }}</td> -->
-                                        <!-- <td>{{ AllMealPlanList[item.MealPlan] }}</td> -->
-                                        <!-- <td>{{ item.AmountQuoted }}</td> -->
-                                        <!-- <td>{{ item.Remarks }}</td> -->
+                                        <td>{{ item.StaffName }}</td>
                                         <td>
-                                             <span class="p-1"
+                                             <span class="p-2"
                                                   [ngClass]="item.EnquiryStatus == 1 ? 'badge text-bg-success' : 'badge text-bg-danger'">
                                                   {{ AllEnquiryStatusList[item.EnquiryStatus] }}
                                              </span>
                                         </td>
-                                        <!-- <td>{{ item.CreatedOn | date: 'dd-MM-yyyy hh:mm a' }}</td>
-                                        <td>{{ item.UpdatedBy }}</td>
-                                        <td>{{ item.UpdatedOn | date: 'dd-MM-yyyy hh:mm a' }}</td> -->
+
                                         <td *ngIf="action.CanEdit">
                                              <button class="btn btn-sm btn-warning" data-bs-toggle="modal"
                                                   data-bs-target="#staticBackdrop" (click)="editEnquiry(item)">
@@ -284,11 +271,11 @@
                                         <!--Mobile no -->
                                         <mat-form-field appearance="outline" class="col-sm-4">
                                              <mat-label>Moblie No.</mat-label>
-                                             <input matInput #MoblieNo="ngModel" name="MoblieNo"
-                                                  [(ngModel)]="Enquiry.MoblieNo" required autofocus maxlength="10">
+                                             <input matInput #MobileNo="ngModel" name="MobileNo"
+                                                  [(ngModel)]="Enquiry.MobileNo" required autofocus maxlength="10">
                                              <mat-error
-                                                  *ngIf="(MoblieNo.dirty  || MoblieNo.touched) || (MoblieNo.invalid && isSubmitted)">
-                                                  MoblieNo is <strong>required</strong>
+                                                  *ngIf="(MobileNo.dirty  || MobileNo.touched) || (MobileNo.invalid && isSubmitted)">
+                                                  MobileNo is <strong>required</strong>
                                              </mat-error>
                                         </mat-form-field>
                                         <!--AmountQuoted -->
